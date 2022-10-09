@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-neutral-800 text-neutral-100;
+}
+
+input {
+  @apply rounded-lg bg-neutral-700 p-5 text-neutral-100 focus:outline-none;
+}
+
+textarea {
+  @apply resize-none overflow-hidden rounded-lg bg-neutral-700 p-5 text-neutral-100 focus:outline-none;
+}
