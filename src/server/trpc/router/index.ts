@@ -1,10 +1,12 @@
 // src/server/trpc/router/index.ts
 import { t } from "../trpc";
-import { exampleRouter } from "./example";
+import { questionRouter } from "./question";
 import { authRouter } from "./auth";
+import { answerRouter } from "./answer";
 
 export const appRouter = t.router({
-  example: exampleRouter,
+  question: questionRouter,
+  answer: answerRouter,
   auth: authRouter,
 });
 

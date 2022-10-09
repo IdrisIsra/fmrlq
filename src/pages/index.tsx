@@ -2,9 +2,34 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { trpc } from "../utils/trpc";
+import { useForm, SubmitHandler } from "react-hook-form";
+
+type Inputs = {
+  userQuestion: string;
+  userAnswer: string;
+};
 
 const Home: NextPage = () => {
   const { data: sessionData } = useSession();
+  const { data: questionData } = trpc.question.getRandom.useQuery();
+  const questionMutation = trpc.question.addQuestion.useMutation();
+  const answerMutation = trpc.answer.addAnswer.useMutation();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<Inputs>();
+
+  const onSubmit: SubmitHandler<Inputs> = (formData) => {
+    if (questionData) {
+      questionMutation.mutateAsync({ question: formData.userQuestion });
+      answerMutation.mutateAsync({
+        answer: formData.userAnswer,
+        questionId: questionData.id,
+      });
+    }
+  };
 
   return (
     <>
@@ -29,27 +54,35 @@ const Home: NextPage = () => {
       </div>
       <main className="container mx-auto flex flex-col items-center p-4">
         <div className="flex flex-col gap-10 lg:w-2/3">
-          <div className="space-y-2">
-            <h1 className="text-xl font-bold ">Ask a question:</h1>
-            <input
-              placeholder="Write"
-              spellCheck="false"
-              className=" w-full text-purple-300"
-            />
-          </div>
-          <div className="space-y-2">
-            <h1 className="text-xl font-bold">Answer a question:</h1>
-            <div className="rounded-lg border border-dashed border-neutral-600 p-5 text-center text-2xl font-bold text-purple-300">
-              What is the meaning of life?
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="space-y-2">
+              <h1 className="text-xl font-bold ">Ask a question:</h1>
+              <input
+                placeholder="Write"
+                spellCheck="false"
+                className=" w-full text-purple-300"
+                {...register("userQuestion", { required: true })}
+              />
             </div>
-            <textarea placeholder="Answer" className="min-h-[10rem] w-full" />
-          </div>
-          <button
-            className="rounded-md border border-neutral-100 px-4 py-2 text-xl shadow-lg hover:bg-neutral-600"
-            onClick={() => console.log("clicked")}
-          >
-            Proceed!
-          </button>
+            <div className="space-y-2">
+              <h1 className="text-xl font-bold">Answer a question:</h1>
+              <div className="rounded-lg border border-dashed border-neutral-600 p-5 text-center text-2xl font-bold text-purple-300">
+                {questionData?.question}
+              </div>
+              <textarea
+                placeholder="Answer"
+                className="min-h-[10rem] w-full"
+                {...register("userAnswer", { required: true })}
+              />
+            </div>
+            {errors.userAnswer && <span>Please fill out all forms!</span>}
+            <button
+              className="w-full rounded-md border border-neutral-100 px-4 py-2 text-xl shadow-lg hover:bg-neutral-600"
+              type="submit"
+            >
+              Proceed!
+            </button>
+          </form>
         </div>
       </main>
     </>
