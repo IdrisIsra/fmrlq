@@ -2,7 +2,6 @@ import type { NextPage } from "next";
 import { trpc } from "../utils/trpc";
 import { useForm, SubmitHandler } from "react-hook-form";
 import AnswerQuestion from "../components/AnswerQuestion";
-import Header from "../components/Header";
 
 const Home: NextPage = () => {
   const utils = trpc.useContext();
@@ -33,24 +32,21 @@ const Home: NextPage = () => {
 
   return (
     <>
-      <Header />
-
       <main className="container mx-auto flex flex-col items-center gap-10 p-4">
         {answerMutation.isLoading ? (
           "Saving your answer, one moment!"
         ) : (
           <>
-            <p className="lg:w-2/3">
-              Your question was added to the database successfully. We&apos;ll
-              be letting you know when people answer it! You may continue
-              answering questions in the meantime.
+            <p className="text-2xl text-teal-400 lg:w-2/3">
+              Your question was added to the database successfully. Now you
+              wait.
             </p>
             <form
               onSubmit={handleSubmit(onSubmit)}
               className="flex flex-col gap-10 lg:w-2/3"
             >
               <AnswerQuestion
-                title={"Answer a question:"}
+                title={"You may continue answering questions:"}
                 isLoading={isLoading}
                 questionData={questionData}
                 register={register}
