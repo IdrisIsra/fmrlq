@@ -1,9 +1,10 @@
 import type { NextPage } from "next";
+import { signIn, signOut, useSession } from "next-auth/react";
 import { trpc } from "../utils/trpc";
 import { useForm, SubmitHandler } from "react-hook-form";
 import AnswerQuestion from "../components/AnswerQuestion";
-import Header from "../components/Header";
 import { useRouter } from "next/router";
+import Image from "next/image";
 
 export type Inputs = {
   userQuestion?: string;
@@ -11,6 +12,7 @@ export type Inputs = {
 };
 
 const Home: NextPage = () => {
+  const { data: sessionData } = useSession();
   const utils = trpc.useContext();
   const router = useRouter();
   const { data: questionData, isLoading } = trpc.question.getRandom.useQuery();
@@ -39,17 +41,55 @@ const Home: NextPage = () => {
     }
   };
 
+  if (!sessionData?.user) {
+    return (
+      <main className="container mx-auto flex flex-col justify-center gap-5 p-4 lg:w-1/2">
+        <h1 className="text-xl font-bold">
+          {`Hello ${sessionData?.user ?? "stranger"},`}
+        </h1>
+        <p>
+          Here you may ask a question, and answer questions others before you
+          have asked. To do this, you will have to authenticate. There are 2
+          main reasons for this requirement:
+        </p>
+        <ul className="list-decimal pl-5">
+          <li>I wanted to implement authentication</li>
+          <li>I didn&apos;t want people answering their own questions.</li>
+        </ul>
+        <p>
+          Only your name and email address is subject to collection. They
+          shan&apos;t be used for{" "}
+          <span className="relative z-10 text-rose-500">
+            neferious{" "}
+            <span className="absolute left-4 top-3 z-0 text-xs text-neutral-200">
+              spooky
+            </span>
+            <span className="absolute left-0 -top-2 z-0 text-xs text-neutral-200">
+              spooooooky
+            </span>
+          </span>
+          purposes. All your data, as ever, are belong to you. When you&apos;re
+          ready:
+        </p>
+        <button
+          className="rounded-md border border-neutral-100 px-4 py-2 text-xl shadow-lg hover:bg-neutral-600"
+          onClick={sessionData ? () => signOut() : () => signIn()}
+        >
+          {sessionData ? "Sign out" : "Sign in"}
+        </button>
+      </main>
+    );
+  }
+
   return (
     <>
-      <Header />
-
       <main className="container mx-auto flex flex-col items-center p-4">
         {answerMutation.isLoading ? (
-          "Saving your answer, one moment!"
+          <Image src="/puff.svg" alt="loading" height="48px" width="48px" />
         ) : (
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="flex flex-col gap-10 lg:w-2/3"
+            className="flex w-full flex-col gap-10 lg:w-2/3"
           >
             <div className="space-y-2">
               <h1 className="text-xl font-bold ">Ask a question:</h1>
