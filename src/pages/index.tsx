@@ -60,7 +60,7 @@ const Home: NextPage = () => {
           Only your name and email address is subject to collection. They
           shan&apos;t be used for{" "}
           <span className="relative z-10 text-rose-500">
-            neferious{" "}
+            nefarious{" "}
             <span className="absolute left-4 top-3 z-0 text-xs text-neutral-200">
               spooky
             </span>
