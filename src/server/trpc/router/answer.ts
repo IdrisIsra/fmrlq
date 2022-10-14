@@ -14,7 +14,11 @@ export const answerRouter = t.router({
       });
       return entry;
     }),
-  getAll: t.procedure.query(({ ctx }) => {
-    return ctx.prisma.answer.findMany();
-  }),
+  getAnswers: t.procedure
+    .input(z.object({ questionId: z.string() }))
+    .query(({ input, ctx }) => {
+      return ctx.prisma.answer.findMany({
+        where: { questionId: input.questionId },
+      });
+    }),
 });

@@ -13,12 +13,21 @@ export const questionRouter = t.router({
       });
       return entry;
     }),
+  getSpecific: t.procedure
+    .input(z.object({ questionId: z.string() }))
+    .query(({ input, ctx }) => {
+      return ctx.prisma.question.findFirst({
+        where: { id: input.questionId },
+      });
+    }),
   getRandom: t.procedure.query(({ ctx }) => {
     return ctx.prisma.question.findFirst({
       where: { answers: { none: {} } },
     });
   }),
   getAll: t.procedure.query(({ ctx }) => {
-    return ctx.prisma.question.findMany();
+    return ctx.prisma.question.findMany({
+      where: { userId: ctx.session?.user?.id },
+    });
   }),
 });
