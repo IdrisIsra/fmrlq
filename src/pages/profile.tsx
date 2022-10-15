@@ -15,12 +15,12 @@ const Home: NextPage = () => {
     );
 
   return (
-    <main className="container mx-auto flex flex-col items-center gap-10 p-4">
-      <p className="text-2xl text-teal-400 lg:w-2/3">
+    <main className="mx-auto flex max-h-[90vh] flex-col items-center gap-10 overflow-y-scroll p-4">
+      <p className="text-2xl text-teal-400 lg:w-1/2">
         Below are the questions you have asked so far. Please click on one, to
         see the corresponding answers:
       </p>
-      <ul className="space-y-2 lg:w-2/3">
+      <ul className="space-y-2 lg:w-1/2">
         {allQuestionsData.map((question) => {
           return (
             <li

@@ -1,5 +1,6 @@
 import { t } from "../trpc";
 import { z } from "zod";
+import { PrismaPromise, Question } from "@prisma/client";
 
 export const questionRouter = t.router({
   addQuestion: t.procedure
@@ -21,9 +22,14 @@ export const questionRouter = t.router({
       });
     }),
   getRandom: t.procedure.query(({ ctx }) => {
-    return ctx.prisma.question.findFirst({
-      where: { answers: { none: {} } },
-    });
+    // return ctx.prisma.question.findFirst({
+    //   where: { answers: { none: {} } },
+    // });
+
+    const result = ctx.prisma.$queryRawUnsafe(
+      `SELECT * FROM "Question" WHERE "userId" <> '${ctx.session?.user?.id}' ORDER BY RANDOM() LIMIT 1;`
+    ) as PrismaPromise<Question[]>;
+    return result;
   }),
   getAll: t.procedure.query(({ ctx }) => {
     return ctx.prisma.question.findMany({

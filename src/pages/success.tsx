@@ -21,10 +21,10 @@ const Home: NextPage = () => {
   } = useForm<{ userAnswer: string }>();
 
   const onSubmit: SubmitHandler<{ userAnswer: string }> = (formData) => {
-    if (questionData) {
+    if (questionData?.[0]) {
       answerMutation.mutateAsync({
         answer: formData.userAnswer,
-        questionId: questionData.id,
+        questionId: questionData?.[0].id,
       });
       reset();
     }
@@ -48,7 +48,7 @@ const Home: NextPage = () => {
               <AnswerQuestion
                 title={"You may continue answering questions:"}
                 isLoading={isLoading}
-                questionData={questionData}
+                questionData={questionData?.[0]}
                 register={register}
               />
               <button

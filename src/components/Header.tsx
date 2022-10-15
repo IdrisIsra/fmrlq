@@ -9,7 +9,7 @@ const Header = () => {
   const { data: sessionData } = useSession();
 
   return (
-    <div className="relative flex items-center justify-center">
+    <div className="relative flex h-[10vh] items-center justify-center">
       {sessionData && (
         <button
           className="absolute left-2 flex justify-center rounded-md border border-neutral-100 px-4 py-2 text-xl shadow-lg hover:bg-neutral-600 lg:left-10 lg:w-24"

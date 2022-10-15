@@ -32,11 +32,11 @@ const Home: NextPage = () => {
   } = useForm<Inputs>();
 
   const onSubmit: SubmitHandler<Inputs> = (formData) => {
-    if (questionData && formData.userQuestion) {
+    if (questionData?.[0] && formData.userQuestion) {
       questionMutation.mutateAsync({ question: formData.userQuestion });
       answerMutation.mutateAsync({
         answer: formData.userAnswer,
-        questionId: questionData.id,
+        questionId: questionData[0].id,
       });
     }
   };
@@ -103,7 +103,7 @@ const Home: NextPage = () => {
             <AnswerQuestion
               title={"Answer a question:"}
               isLoading={isLoading}
-              questionData={questionData}
+              questionData={questionData?.[0]}
               register={register}
             />
 
